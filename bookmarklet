@@ -1,0 +1,17 @@
+javascript:(function() {
+    const scv_bodyClasses = Array.from(document.body.classList);
+    const scv_postClass = scv_bodyClasses.find(e => e.includes("page-id-") || e.includes("postid-"));
+    const scv_postID = scv_postClass ? scv_postClass.replace(/page-id-|postid-/, "") : 0;
+
+    if(!scv_postID) {
+        alert("No WordPress post found");
+        return;
+    }
+
+    let scv_apiLinkElement = document.querySelector('link[rel="https://api.w.org/"]');
+    let scv_baseUrl = scv_apiLinkElement && scv_apiLinkElement.href 
+        ? scv_apiLinkElement.href.replace("/wp-json/", "") 
+        : document.location.origin;
+
+    window.location.href = `${scv_baseUrl}/wp-admin/post.php?post=${scv_postID}&action=edit`;
+})()
