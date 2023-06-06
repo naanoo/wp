@@ -1,0 +1,32 @@
+javascript:(function() {
+    /**
+     * Bookmarklet to redirect from a WordPress frontend page to the corresponding edit page in the WordPress admin area.
+     *
+     */
+
+    // Get a list of all classes applied to the body element
+    const scv_bodyClasses = Array.from(document.body.classList);
+
+    // Find the class which represents the page ID (it includes "page-id-" or "postid-")
+    const scv_postClass = scv_bodyClasses.find(e => e.includes("page-id-") || e.includes("postid-"));
+
+    // Extract the post ID from the class
+    const scv_postID = scv_postClass ? scv_postClass.replace(/page-id-|postid-/, "") : 0;
+
+    // If post ID not found, alert the user and stop execution
+    if(!scv_postID) {
+        alert("No WordPress post found");
+        return;
+    }
+
+    // Find the link element which points to the WordPress REST API
+    let scv_apiLinkElement = document.querySelector('link[rel="https://api.w.org/"]');
+
+    // Extract the base URL of the WordPress site
+    let scv_baseUrl = scv_apiLinkElement && scv_apiLinkElement.href 
+        ? scv_apiLinkElement.href.replace("/wp-json/", "") 
+        : document.location.origin;
+
+    // Redirect to the edit page for the found post ID
+    window.location.href = `${scv_baseUrl}/wp-admin/post.php?post=${scv_postID}&action=edit`;
+})()
